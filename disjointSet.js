@@ -1,36 +1,28 @@
 
-class Node {
+class ElementNode {
     constructor() {
-        this.parent = parent;
-        this.ranank = 1;
+        this.parent = null;
+        this.rank = 1;
     }
 }
 
 class DisjointSet {
     constructor() {
         this.elementNodes = {};
-        this.numberOfSets = 0;
     }
 
-    add(element) {
+    createSetWithSingleElement(element) {
         if (Object.keys(elementNodes).contains(element)) {
             return false;
         }
-        elementNodes.put(element, new Node());
-        numberOfSets++;
+
+        elementNodes[element] = new ElementNode();
         return true;
     }
 
-    getRoot(element) {
-        let node = elementNodes.get(element);
-        if (node == null) {
-            node = new Node();
-            elementNodes.put(element, node);
-            numberOfSets++;
-            return node;
-        }
-
-        while (node.parent != node) {
+    findSetRoot(element) {
+        let node = elementNodes[element];
+        while (node.parent !== null) {
             let parent = node.parent;
             node.parent = parent.parent;
             node = parent;
@@ -38,10 +30,10 @@ class DisjointSet {
         return node;
     }
 
-    joinSets(element1, element2) {
-        let root1 = getRoot(element1);
-        let root2 = getRoot(element2);
-        if (root1 == root2) {
+    mergeSets(element1, element2) {
+        let root1 = findSetRoot(element1);
+        let root2 = findSetRoot(element2);
+        if (root1 === root2) {
             return false;
         } else {
             if (root1.rank > root2.rank) {
@@ -52,16 +44,11 @@ class DisjointSet {
                 root1.parent = root2;
                 root2.rank++;
             }
-            numberOfSets--;
             return true;
         }
     }
 
-    elementsAreInOneSet(element1, element2) {
-        return getRoot(element1) == getRoot(element2);
-    }
-
-    getNumberOfSets() {
-        return numberOfSets;
+    elementsBelongToSameSet(element1, element2) {
+        return findSetRoot(element1) === findSetRoot(element2);
     }
 }
