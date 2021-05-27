@@ -1,32 +1,67 @@
-class DisjointSetNode {
-    constructor(value) {
-        this.value = value,
-        this.children = {};
-        this.rank = 1;
+
+class Node {
+    constructor() {
         this.parent = parent;
+        this.ranank = 1;
     }
 }
 
-class DisjointSe {
+class DisjointSet {
     constructor() {
-        this.list = {};
-        this.size = 0;
+        this.elementNodes = {};
+        this.numberOfSets = 0;
     }
 
-    init(size){
-        this.size = size;
-        for (let index = 0; index < this.size; index++) {
-            const disjointSetNode = new DisjointSetNode(index)
-            this.list[index] = disjointSetNode;
-            
+    add(element) {
+        if (Object.keys(elementNodes).contains(element)) {
+            return false;
         }
+        elementNodes.put(element, new Node());
+        numberOfSets++;
+        return true;
     }
 
-    findRoot(x){
-        if(this.list[x] && this.list[x].parent !== 1){
-            return this.findRoot(this.list[x].parent)
+    getRoot(element) {
+        let node = elementNodes.get(element);
+        if (node == null) {
+            node = new Node();
+            elementNodes.put(element, node);
+            numberOfSets++;
+            return node;
+        }
+
+        while (node.parent != node) {
+            let parent = node.parent;
+            node.parent = parent.parent;
+            node = parent;
+        }
+        return node;
+    }
+
+    joinSets(element1, element2) {
+        let root1 = getRoot(element1);
+        let root2 = getRoot(element2);
+        if (root1 == root2) {
+            return false;
         } else {
-            return this.list[x]
+            if (root1.rank > root2.rank) {
+                root2.parent = root1;
+            } else if (root1.rank < root2.rank) {
+                root1.parent = root2;
+            } else {
+                root1.parent = root2;
+                root2.rank++;
+            }
+            numberOfSets--;
+            return true;
         }
+    }
+
+    elementsAreInOneSet(element1, element2) {
+        return getRoot(element1) == getRoot(element2);
+    }
+
+    getNumberOfSets() {
+        return numberOfSets;
     }
 }
